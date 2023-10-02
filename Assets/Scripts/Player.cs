@@ -14,6 +14,9 @@ public class Player : MonoBehaviour
     public GameObject bulletPrefab;
     public float maxShotDelay;
     public float curShotDelay;
+
+    public GameManager gameManager;
+
     void Update() {
         if(Input.GetMouseButton(0)) {
             OnMouseDrag();    
@@ -60,6 +63,10 @@ public class Player : MonoBehaviour
                     isTouchRight = true;
                     break;
             }
+        }
+        else if((other.gameObject.tag == "Enemy") || (other.gameObject.tag == "EnemyBullet")) {
+            gameManager.RespawnManager();
+            gameObject.SetActive(false);
         }
     }
     private void OnTriggerExit2D(Collider2D other) {

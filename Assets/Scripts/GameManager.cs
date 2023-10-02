@@ -30,4 +30,12 @@ public class GameManager : MonoBehaviour
             curSpawnDelay = 0;
         }
     }
+
+    public void RespawnManager() {
+        Invoke("Respawn", 2);
+    }
+    void Respawn() {
+        player.transform.position = Vector2.down * 3.5f;
+        player.SetActive(true);
+    }
 }
