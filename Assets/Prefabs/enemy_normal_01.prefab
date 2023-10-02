@@ -138,6 +138,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 4
   hp: 10
+  enemyScore: 50
   bulletPrefab: {fileID: 1554381232200040985, guid: c14865b1ce24b2a4cb9d670306910e5b, type: 3}
   enemyName: L
   maxBulletDelay: 1

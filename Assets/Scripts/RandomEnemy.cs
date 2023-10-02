@@ -6,6 +6,7 @@ public class RandomEnemy : MonoBehaviour
 {
     public float speed;
     public int hp;
+    public int enemyScore;
 
     public GameObject bulletPrefab;
     public string enemyName;
@@ -29,6 +30,8 @@ public class RandomEnemy : MonoBehaviour
     void OnHit(int damage) {
         hp -= damage;
         if(hp <= 0) {
+            Player playerLogic = player.GetComponent<Player>();
+            playerLogic.score += enemyScore;
             Destroy(gameObject);
         }
     }

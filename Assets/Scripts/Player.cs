@@ -6,6 +6,10 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public float speed;
+    public int life;
+    public int score;
+    public bool isHit;
+    
     public bool isTouchTop;
     public bool isTouchBottom;
     public bool isTouchLeft;
@@ -65,8 +69,17 @@ public class Player : MonoBehaviour
             }
         }
         else if((other.gameObject.tag == "Enemy") || (other.gameObject.tag == "EnemyBullet")) {
-            gameManager.RespawnManager();
+            if(isHit) return;
+
+            life--;
+            gameManager.UpdateLife(life);
+            isHit = true;
+
+            if(life == 0) gameManager.GameOver();
+            else gameManager.RespawnManager();
+
             gameObject.SetActive(false);
+            Destroy(other.gameObject);
         }
     }
     private void OnTriggerExit2D(Collider2D other) {
