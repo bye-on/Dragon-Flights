@@ -6,15 +6,17 @@ public class GameManager : MonoBehaviour
 {
     public GameObject[] enemyObjs;
     public Transform[] spawnPoints;
-
+    public GameObject player;
     public float maxSpawnDelay;
     public float curSpawnDelay;
     
     void SpawnEnemy() {
         int randomEnemy = Random.Range(0, 3);
         int randomPoint = Random.Range(0, 5);
-        Instantiate(enemyObjs[randomEnemy], 
+        GameObject enemy = Instantiate(enemyObjs[randomEnemy], 
             spawnPoints[randomPoint].position, spawnPoints[randomPoint].rotation);
+        RandomEnemy enemyLogic = enemy.GetComponent<RandomEnemy>();
+        enemyLogic.player = player;
     }
 
     // Update is called once per frame
