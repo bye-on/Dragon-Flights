@@ -913,6 +913,7 @@ MonoBehaviour:
   speed: 3
   life: 3
   score: 0
+  isHit: 0
   isTouchTop: 0
   isTouchBottom: 0
   isTouchLeft: 0
@@ -1866,12 +1867,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b53dd5374e31f949ba52e1fcf5c8ff2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnIndex: 0
+  spawnEnd: 0
   scoreText: {fileID: 586890821}
   lifeImage:
   - {fileID: 1937646075}
   - {fileID: 60187715}
   - {fileID: 664910402}
   gameOverSet: {fileID: 1404335495}
+  sprites: []
   enemyObjs:
   - {fileID: 5457251278628891410, guid: adea532cd65e7494c8ba6ba2ae2f1917, type: 3}
   - {fileID: 1271496135061041614, guid: ac0e1ab73a78f36488a87bd7220fe358, type: 3}
@@ -1883,7 +1887,7 @@ MonoBehaviour:
   - {fileID: 801026536}
   - {fileID: 2005498756}
   player: {fileID: 647847891}
-  maxSpawnDelay: 1
+  nextSpawnDelay: 0
   curSpawnDelay: 0
 --- !u!4 &1386941207
 Transform:
@@ -2209,7 +2213,7 @@ Transform:
   m_GameObject: {fileID: 1868812338}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1417271384}

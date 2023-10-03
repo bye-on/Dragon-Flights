@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class GameManager : MonoBehaviour
 {
+    List<Spawn> spawnList;
+    public int spawnIndex;
+    public bool spawnEnd;
+
     public Text scoreText;
     public Image[] lifeImage;
     public GameObject gameOverSet;
@@ -13,16 +18,69 @@ public class GameManager : MonoBehaviour
     public GameObject[] enemyObjs;
     public Transform[] spawnPoints;
     public GameObject player;
-    public float maxSpawnDelay;
+    public float nextSpawnDelay;
     public float curSpawnDelay;
+
+    void Awake() {
+        spawnList = new List<Spawn>();
+        ReadSpawnFile();
+    }
+
+    void ReadSpawnFile() {
+        spawnList.Clear();
+        spawnIndex = 0;
+        spawnEnd = false;
+
+        TextAsset textAsset = Resources.Load("Stage 0") as TextAsset;
+        StringReader stringReader = new StringReader(textAsset.text);
+
+        while(stringReader != null) {    
+            string line = stringReader.ReadLine();
+            Debug.Log(line);
+
+            if(line == null) break;
+
+            Spawn spawnData = new Spawn();
+            spawnData.delay = float.Parse(line.Split(',')[0]);
+            spawnData.type = line.Split(',')[1];
+            spawnData.point = int.Parse(line.Split(',')[2]);
+            spawnList.Add(spawnData);
+        }
+        stringReader.Close();
+
+        nextSpawnDelay = spawnList[0].delay;
+    }
     
     void SpawnEnemy() {
-        int randomEnemy = Random.Range(0, 3);
-        int randomPoint = Random.Range(0, 5);
-        GameObject enemy = Instantiate(enemyObjs[randomEnemy], 
-            spawnPoints[randomPoint].position, spawnPoints[randomPoint].rotation);
+        int enemyIndex = 0;
+        switch(spawnList[spawnIndex].type) {
+            case "S":
+                enemyIndex = 0;
+                break;
+            case "M":
+                enemyIndex = 1;
+                break;
+            case "L":
+                enemyIndex = 2;
+                break;
+        }
+
+        int pointIndex = spawnList[spawnIndex].point;
+
+        // int randomEnemy = Random.Range(0, 3);
+        // int randomPoint = Random.Range(0, 5);
+        GameObject enemy = Instantiate(enemyObjs[enemyIndex], 
+            spawnPoints[pointIndex].position, spawnPoints[pointIndex].rotation);
         RandomEnemy enemyLogic = enemy.GetComponent<RandomEnemy>();
         enemyLogic.player = player;
+
+        spawnIndex++;
+        if(spawnIndex == spawnList.Count) {
+            spawnEnd = true;
+            return;
+        }
+
+        nextSpawnDelay = spawnList[spawnIndex].delay;
     }
 
     // Update is called once per frame
@@ -30,9 +88,9 @@ public class GameManager : MonoBehaviour
     {
         curSpawnDelay += Time.deltaTime;
 
-        if(curSpawnDelay > maxSpawnDelay) {
+        if(curSpawnDelay > nextSpawnDelay && !spawnEnd) {
             SpawnEnemy();
-            maxSpawnDelay = Random.Range(0.5f, 3f);
+            // nextSpawnDelay = Random.Range(0.5f, 3f);
             curSpawnDelay = 0;
         }
 

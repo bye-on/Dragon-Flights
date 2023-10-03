@@ -38,7 +38,7 @@ public class RandomEnemy : MonoBehaviour
      void Fire() {
         if(curBulletDelay < maxBulletDelay) return;
 
-        if(enemyName == "M") {
+        if(enemyName == "L") {
             GameObject bullet = Instantiate(bulletPrefab, transform.position + Vector3.down, transform.rotation);
             bullet.GetComponent<SpriteRenderer>().flipY = true;
             Rigidbody2D rigidBullet = bullet.GetComponent<Rigidbody2D>();
@@ -46,7 +46,7 @@ public class RandomEnemy : MonoBehaviour
 
             rigidBullet.AddForce(dirVec.normalized * 10, ForceMode2D.Impulse);
         }
-        else if (enemyName == "L") {
+        else if (enemyName == "M") {
             GameObject bulletL = Instantiate(bulletPrefab, transform.position + Vector3.left * 0.2f + Vector3.down, transform.rotation);
             GameObject bulletR = Instantiate(bulletPrefab, transform.position + Vector3.right * 0.2f + Vector3.down, transform.rotation);
             bulletL.GetComponent<SpriteRenderer>().flipY = true;
