@@ -17,23 +17,32 @@ public class RandomEnemy : MonoBehaviour
     public GameObject player;
 
     Rigidbody2D rigid;
+    SpriteRenderer sprite;
 
     void Awake() {
         rigid = GetComponent<Rigidbody2D>();
+        sprite = GetComponent<SpriteRenderer>();
         rigid.velocity = Vector2.down * speed;    
     }
     void Update() {
+        if(enemyName == "B") 
+            return;
         Fire();
         curBulletDelay += Time.deltaTime;
     }
 
     void OnHit(int damage) {
         hp -= damage;
+        sprite.color = new Color(0.8f, 0.8f, 0.8f, 1);
+        Invoke("ReturnSprite", 0.05f);
         if(hp <= 0) {
             Player playerLogic = player.GetComponent<Player>();
             playerLogic.score += enemyScore;
             Destroy(gameObject);
         }
+    }
+    void ReturnSprite() {
+        sprite.color = new Color(1, 1, 1, 1);
     }
      void Fire() {
         if(curBulletDelay < maxBulletDelay) return;
@@ -61,12 +70,14 @@ public class RandomEnemy : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other) {
         if(other.gameObject.tag == "BorderBullet") {
-            Destroy(gameObject);
+            gameObject.SetActive(false);
+            transform.rotation = Quaternion.identity;
         }
         else if(other.gameObject.tag == "PlayerBullet") {
             Bullet bullet = other.gameObject.GetComponent<Bullet>();
             OnHit(bullet.damage);
-            Destroy(other.gameObject);
+            
+            other.gameObject.SetActive(false);
         }
     }
 }
