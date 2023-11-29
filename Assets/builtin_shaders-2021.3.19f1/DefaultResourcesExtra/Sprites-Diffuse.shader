@@ -55,7 +55,7 @@ Shader "Sprites/Screen"
 
         void surf (Input IN, inout SurfaceOutput o)
         {
-            fixed4 c = 1 - ((1 - SampleSpriteTexture (IN.uv_MainTex)) * ( 1 - IN.color));
+            fixed4 c = 1 - ((1 - SampleSpriteTexture (IN.uv_MainTex)) * (1 - IN.color));
             c.a = SampleSpriteTexture(IN.uv_MainTex).a * IN.color.a;
             
             o.Albedo = c.rgb * c.a;

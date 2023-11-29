@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     public float curShotDelay;
 
     public GameManager gameManager;
+    public ObjectManager objectManager;
 
     void Update() {
         if(Input.GetMouseButton(0)) {
@@ -31,7 +32,9 @@ public class Player : MonoBehaviour
     void Fire() {
         if(curShotDelay < maxShotDelay)
             return;
-        GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
+        GameObject bullet = objectManager.MakeObject("BulletPlayer");
+        bullet.transform.position = transform.position;
+
         Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
         rigid.AddForce(Vector2.up * 10, ForceMode2D.Impulse);
 
@@ -39,16 +42,18 @@ public class Player : MonoBehaviour
     }
     void OnMouseDrag() {
         float h = Input.mousePosition.x;
-        float v = Input.mousePosition.y;
+
+        // 세로 이동 안됨
+        // float v = Input.mousePosition.y;
         
-        if(isTouchTop & v >= Screen.height) v = Screen.height;
-        if(isTouchBottom && v <= 0) v = 0;
+        // if(isTouchTop & v >= Screen.height) v = Screen.height;
+        // if(isTouchBottom && v <= 0) v = 0;
         if(isTouchLeft && h <= 0) h = 0;
         if(isTouchRight && h >= Screen.width) h = Screen.width;
         
-        Vector2 mousePos = new Vector2(h, v);
+        Vector2 mousePos = new Vector2(h, 0);
         Vector2 objPos = Camera.main.ScreenToWorldPoint(mousePos);
-        transform.position = objPos;
+        transform.position = new Vector2(objPos.x, -3.5f);
     }
 
     void OnTriggerEnter2D(Collider2D other) {
@@ -79,7 +84,8 @@ public class Player : MonoBehaviour
             else gameManager.RespawnManager();
 
             gameObject.SetActive(false);
-            Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
+            // Destroy(other.gameObject);
         }
     }
     private void OnTriggerExit2D(Collider2D other) {

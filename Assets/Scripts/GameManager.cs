@@ -14,16 +14,18 @@ public class GameManager : MonoBehaviour
     public Text scoreText;
     public Image[] lifeImage;
     public GameObject gameOverSet;
+    public ObjectManager objectManager;
 
-    public GameObject[] enemyObjs;
+    string[] enemyObjs;
     public Transform[] spawnPoints;
     public GameObject player;
     public float nextSpawnDelay;
     public float curSpawnDelay;
 
     void Awake() {
+        enemyObjs = new string[] { "EnemyS", "EnemyM", "EnemyL" };
         spawnList = new List<Spawn>();
-        ReadSpawnFile();
+        // ReadSpawnFile();
     }
 
     void ReadSpawnFile() {
@@ -63,16 +65,23 @@ public class GameManager : MonoBehaviour
             case "L":
                 enemyIndex = 2;
                 break;
+            case "B":
+                enemyIndex = 3;
+                break;
         }
 
         int pointIndex = spawnList[spawnIndex].point;
 
         // int randomEnemy = Random.Range(0, 3);
         // int randomPoint = Random.Range(0, 5);
-        GameObject enemy = Instantiate(enemyObjs[enemyIndex], 
-            spawnPoints[pointIndex].position, spawnPoints[pointIndex].rotation);
+        GameObject enemy = objectManager.MakeObject(enemyObjs[enemyIndex]);
+        enemy.transform.position = spawnPoints[pointIndex].position;
+
         RandomEnemy enemyLogic = enemy.GetComponent<RandomEnemy>();
+        Rigidbody2D rigid = enemy.GetComponent<Rigidbody2D>();
+        rigid.AddForce(Vector2.down * enemyLogic.speed, ForceMode2D.Impulse);
         enemyLogic.player = player;
+        enemyLogic.objectManager = objectManager;
 
         spawnIndex++;
         if(spawnIndex == spawnList.Count) {
@@ -89,7 +98,7 @@ public class GameManager : MonoBehaviour
         curSpawnDelay += Time.deltaTime;
 
         if(curSpawnDelay > nextSpawnDelay && !spawnEnd) {
-            SpawnEnemy();
+            // SpawnEnemy();
             // nextSpawnDelay = Random.Range(0.5f, 3f);
             curSpawnDelay = 0;
         }
