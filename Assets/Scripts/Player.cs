@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SearchService;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -9,6 +8,10 @@ public class Player : MonoBehaviour
     public int life;
     public int score;
     public bool isHit;
+
+    public bool isInvincible;  
+    public float invincibleDuration = 3f;  
+    private float invincibleTimer;  
     
     public bool isTouchTop;
     public bool isTouchBottom;
@@ -21,6 +24,7 @@ public class Player : MonoBehaviour
 
     public GameManager gameManager;
     public ObjectManager objectManager;
+    AudioSource audioSource;
 
     void Update() {
         if(Input.GetMouseButton(0)) {
@@ -28,12 +32,24 @@ public class Player : MonoBehaviour
         }
         Fire();
         curShotDelay += Time.deltaTime;
+
+
+        if (isInvincible) {
+            invincibleTimer += Time.deltaTime;
+
+            // 무적 지속 시간이 지나면 무적 상태 해제
+            if (invincibleTimer >= invincibleDuration) {
+                isInvincible = false;
+            }
+        } 
     }
     void Fire() {
         if(curShotDelay < maxShotDelay)
             return;
         GameObject bullet = objectManager.MakeObject("BulletPlayer");
         bullet.transform.position = transform.position;
+        audioSource = bullet.GetComponent<AudioSource>();
+        audioSource.Play();
 
         Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
         rigid.AddForce(Vector2.up * 10, ForceMode2D.Impulse);
@@ -73,15 +89,21 @@ public class Player : MonoBehaviour
                     break;
             }
         }
-        else if((other.gameObject.tag == "Enemy") || (other.gameObject.tag == "EnemyBullet")) {
+        else if(((other.gameObject.tag == "Enemy") && !isInvincible) || ((other.gameObject.tag == "EnemyBullet") && !isInvincible)) {
             if(isHit) return;
 
             life--;
             gameManager.UpdateLife(life);
             isHit = true;
 
+            // 부활 시 무적 상태
+            isInvincible = true;
+            invincibleTimer = 0f;
+
             if(life == 0) gameManager.GameOver();
-            else gameManager.RespawnManager();
+            else {
+                gameManager.RespawnManager();
+            }
 
             gameObject.SetActive(false);
             other.gameObject.SetActive(false);

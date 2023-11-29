@@ -118,6 +118,9 @@ public class GameManager : MonoBehaviour
         gameOverSet.SetActive(true);
     }
     public void GameRetry() {
+        SceneManager.LoadScene(1);
+    }
+    public void ReturnMenu() {
         SceneManager.LoadScene(0);
     }
     public void RespawnManager() {
